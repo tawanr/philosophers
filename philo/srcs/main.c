@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:12:05 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/11 01:09:14 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/11 01:21:05 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	philo_thread(t_philo *table, int *death, int num)
 	{
 		if (pthread_create(&tid, NULL, (void *)philo_patt, temp))
 			return (-1);
-		usleep(100);
+		usleep(25);
 		pthread_detach(tid);
 		temp->tid = tid;
 		temp = temp->next;
@@ -116,7 +116,7 @@ void	*deathcounter(t_philo *philo)
 	fed = 0;
 	full = 0;
 	last = 0;
-	while (counter < philo->params->p_ttdie && !*(philo->params->death))
+	while (counter < philo->params->p_ttdie * 1000 && !*(philo->params->death))
 	{
 		usleep(100);
 		if (philo->eatflag == 1)

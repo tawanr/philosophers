@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:44:29 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/10 21:30:48 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/11 01:22:16 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,9 @@ static int	isnum(char *str)
 		str++;
 	}
 	return (1);
+}
+
+int	ct(int usec)
+{
+	return (usec / 1000);
 }

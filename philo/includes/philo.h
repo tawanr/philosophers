@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:19:09 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/11 00:28:10 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/11 01:23:55 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void			philo_death(t_philo *philo);
 void			philo_clean(t_philo *philo);
 void			philo_dying(unsigned int counter, t_philo *philo, int fed);
 int				checkdead(t_philo *philo, int num);
+int				ct(int usec);
 
 // Init Functions Prototypes
 t_params		*init_params(int argc, char **argv, int *fed, int *death);

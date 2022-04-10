@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 10:52:17 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/11 01:03:21 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/11 01:23:39 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,15 @@ void	philo_action(t_philo *philo, int action, int ts)
 
 	name = philo->name;
 	if (action == A_FORK && !*(philo->params->death))
-		printf(MAG "%8i" RED " %3i" RES " has taken a fork\n", getts(ts), name);
+		printf("%8i" RED " %3i" RES " has taken a fork\n", ct(getts(ts)), name);
 	else if (action == A_EAT && !*(philo->params->death))
-		printf(MAG "%8i" RED " %3i" RES " is eating\n", getts(ts), name);
+		printf("%8i" RED " %3i" RES " is eating\n", ct(getts(ts)), name);
 	else if (action == A_SLEEP && !*(philo->params->death))
-		printf(MAG "%8i" RED " %3i" RES " is sleeping\n", getts(ts), name);
+		printf("%8i" RED " %3i" RES " is sleeping\n", ct(getts(ts)), name);
 	else if (action == A_THINK && !*(philo->params->death))
-		printf(MAG "%8i" RED " %3i" RES " is thinking\n", getts(ts), name);
+		printf("%8i" RED " %3i" RES " is thinking\n", ct(getts(ts)), name);
 	else if (action == A_DEAD && !*(philo->params->death))
-		printf(MAG "%8i" RED " %3i" RES " died\n", getts(ts), name);
+		printf("%8i" RED " %3i" RES " died\n", ct(getts(ts)), name);
 }
 
 int	checkdead(t_philo *philo, int num)

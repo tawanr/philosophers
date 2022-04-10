@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 09:16:08 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/11 00:30:48 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/11 01:24:38 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ unsigned int	gettime(void)
 
 	if (gettimeofday(&tv, NULL) != 0)
 		return (0);
-	time = tv.tv_sec % 1000 * 1000;
-	time += tv.tv_usec / 1000;
+	time = tv.tv_sec % 1000 * 1000000;
+	time += tv.tv_usec;
 	return (time);
 }
 
@@ -86,6 +86,6 @@ void	philo_death(t_philo *philo)
 	timestamp = getts(philo->params->init_time);
 	philo->deathflag = 1;
 	usleep(100);
-	printf(MAG "%8i" RED " %3i" RES " has died\n", timestamp, name);
+	printf("%8i" RED " %3i" RES " has died\n", ct(timestamp), name);
 	pthread_mutex_unlock(&philo->rfork);
 }
