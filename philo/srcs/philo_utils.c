@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 09:16:08 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/10 12:06:34 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/10 23:33:46 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,65 @@ unsigned int	gettime(void)
 	return (time);
 }
 
-unsigned int	gettstamp(int init_time)
+unsigned int	getts(int init_time)
 {
 	int	now;
 
 	now = gettime();
 	return (now - init_time);
+}
+
+void	philo_clean(t_philo *philo)
+{
+	unsigned int	i;
+	t_philo			*temp;
+	unsigned int	num;
+
+	i = 0;
+	num = philo->params->p_num;
+	while (i++ < num)
+	{
+		temp = philo;
+		if (i < num)
+			philo = philo->next;
+		pthread_mutex_destroy(&philo->rfork);
+		free(temp);
+	}
+}
+
+void	philo_dying(unsigned int counter, t_philo *philo, int fed)
+{
+	unsigned int	ttdie;
+	int				numeat;
+	int				full;
+
+	ttdie = philo->params->p_ttdie;
+	numeat = philo->params->p_numeat;
+	if (numeat > 0)
+		full = fed >= numeat;
+	else
+		full = 0;
+	if (counter >= ttdie && !*(philo->params->death) && !full)
+	{
+		(*philo->params->death)++;
+		philo_death(philo);
+	}
+	else
+	{
+		(*philo->params->death)++;
+		pthread_mutex_unlock(&philo->rfork);
+		pthread_mutex_unlock(&philo->next->rfork);
+	}
+}
+
+void	philo_death(t_philo *philo)
+{
+	int	timestamp;
+	int	name;
+
+	name = philo->name;
+	timestamp = getts(philo->params->init_time);
+	usleep(100);
+	printf(MAG "%8i" RED " %3i" RES " has died\n", timestamp, name);
+	pthread_mutex_unlock(&philo->rfork);
 }

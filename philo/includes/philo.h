@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:19:09 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/10 20:23:28 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/10 23:33:59 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,14 @@
 
 typedef struct s_params
 {
+	unsigned int	p_num;
 	unsigned int	p_ttdie;
 	unsigned int	p_tteat;
 	unsigned int	p_ttsleep;
 	unsigned int	p_numeat;
 	unsigned int	init_time;
 	int				*fed;
+	int				*death;
 }	t_params;
 
 typedef struct s_philo
@@ -53,25 +55,28 @@ typedef struct s_philo
 	int				name;
 	int				eatflag;
 	int				deathflag;
-	pthread_t		*tid;
+	pthread_t		tid;
 	t_params		*params;
 	pthread_mutex_t	rfork;
 	struct s_philo	*next;
 }	t_philo;
 
-int				philo_thread(t_philo *table, char *death, int num);
-void			*philo_patt(void *temp);
+int				philo_thread(t_philo *table, int *death, int num);
+void			*philo_patt(t_philo *temp);
 void			*deathcounter(t_philo *temp);
-void			philo_action(t_philo *philo, int action);
+void			philo_action(t_philo *philo, int action, int ts);
+void			philo_death(t_philo *philo);
+void			philo_clean(t_philo *philo);
+void			philo_dying(unsigned int counter, t_philo *philo, int fed);
 
 // Init Functions Prototypes
-t_params		*init_params(int argc, char **argv, int *fed);
+t_params		*init_params(int argc, char **argv, int *fed, int *death);
 t_philo			*philo_birth(t_params *params, int num, int max);
 int				checkargs(int argc, char **argv);
 
 // Time Handling Functions Prototypes
 unsigned int	gettime(void);
-unsigned int	gettstamp(int init_time);
+unsigned int	getts(int init_time);
 
 // Error Handling Functions Prototypes
 void			err_args(void);
