@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:12:05 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/10 23:32:21 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/11 01:09:14 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	main(int argc, char **argv)
 	printf("numeat: %i\n", table->params->p_numeat);
 	if (philo_thread(table, &death, num))
 		return (-1);
-	while (*(table->params->death) < num * 2)
+	while (!checkdead(table, num))
 	{
 		if (table->params->p_numeat > 0 && fed >= num)
 			table->params->p_ttdie = 0;
@@ -67,7 +67,7 @@ int	philo_thread(t_philo *table, int *death, int num)
 	{
 		if (pthread_create(&tid, NULL, (void *)philo_patt, temp))
 			return (-1);
-		usleep(50);
+		usleep(100);
 		pthread_detach(tid);
 		temp->tid = tid;
 		temp = temp->next;
@@ -101,6 +101,7 @@ void	*philo_patt(t_philo *philo)
 		philo_action(philo, A_THINK, it);
 	}
 	(*philo->params->death)++;
+	philo->deathflag = 1;
 	return (NULL);
 }
 

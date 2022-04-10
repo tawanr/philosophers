@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 09:16:08 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/10 23:33:46 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/11 00:30:48 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,13 @@ void	philo_dying(unsigned int counter, t_philo *philo, int fed)
 	if (counter >= ttdie && !*(philo->params->death) && !full)
 	{
 		(*philo->params->death)++;
+		philo->deathflag = 1;
 		philo_death(philo);
 	}
 	else
 	{
 		(*philo->params->death)++;
+		philo->deathflag = 1;
 		pthread_mutex_unlock(&philo->rfork);
 		pthread_mutex_unlock(&philo->next->rfork);
 	}
@@ -82,6 +84,7 @@ void	philo_death(t_philo *philo)
 
 	name = philo->name;
 	timestamp = getts(philo->params->init_time);
+	philo->deathflag = 1;
 	usleep(100);
 	printf(MAG "%8i" RED " %3i" RES " has died\n", timestamp, name);
 	pthread_mutex_unlock(&philo->rfork);
