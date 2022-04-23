@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:12:05 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/11 01:21:05 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/23 01:15:25 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	main(int argc, char **argv)
 	table = philo_birth(init_params(argc, argv, &fed, &death), 1, num);
 	philo_loop(table);
 	memset(&death, 0, 1);
-	printf("numeat: %i\n", table->params->p_numeat);
 	if (philo_thread(table, &death, num))
 		return (-1);
 	while (!checkdead(table, num))
@@ -38,7 +37,7 @@ int	main(int argc, char **argv)
 			table->params->p_ttdie = 0;
 		usleep(1000);
 	}
-	usleep(5000);
+	usleep((ft_atoi(argv[2]) + ft_atoi(argv[3]) + ft_atoi(argv[4])) * 1000);
 	philo_clean(table);
 	return (0);
 }
@@ -67,7 +66,7 @@ int	philo_thread(t_philo *table, int *death, int num)
 	{
 		if (pthread_create(&tid, NULL, (void *)philo_patt, temp))
 			return (-1);
-		usleep(25);
+		usleep(50);
 		pthread_detach(tid);
 		temp->tid = tid;
 		temp = temp->next;
@@ -85,7 +84,7 @@ void	*philo_patt(t_philo *philo)
 		return (NULL);
 	pthread_detach(tid);
 	it = philo->params->init_time;
-	while (!(*philo->params->death))
+	while (!(*philo->params->death) && !philo->deathflag)
 	{
 		pthread_mutex_lock(&philo->rfork);
 		philo_action(philo, A_FORK, it);

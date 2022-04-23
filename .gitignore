@@ -52,5 +52,7 @@ Mkfile.old
 dkms.conf
 
 *
+!*_bonus
+!*_bonus/*
 !*.c
 !*.h

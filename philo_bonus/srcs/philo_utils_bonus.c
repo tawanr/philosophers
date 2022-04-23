@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   philo_utils_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 09:16:08 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/22 09:25:32 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/23 00:52:27 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 unsigned int	gettime(void)
 {
@@ -32,24 +32,6 @@ unsigned int	getts(int init_time)
 	return (now - init_time);
 }
 
-void	philo_clean(t_philo *philo)
-{
-	unsigned int	i;
-	t_philo			*temp;
-	unsigned int	num;
-
-	i = 0;
-	num = philo->params->p_num;
-	while (i++ < num)
-	{
-		temp = philo;
-		if (i < num)
-			philo = philo->next;
-		pthread_mutex_destroy(&philo->rfork);
-		free(temp);
-	}
-}
-
 void	philo_dying(unsigned int counter, t_philo *philo, int fed)
 {
 	unsigned int	ttdie;
@@ -63,29 +45,38 @@ void	philo_dying(unsigned int counter, t_philo *philo, int fed)
 	else
 		full = 0;
 	if (counter >= ttdie && !*(philo->params->death) && !full)
-	{
-		(*philo->params->death)++;
-		philo->deathflag = 1;
-		philo_death(philo);
-	}
+		(*(philo->params->death))++;
 	else
 	{
-		(*philo->params->death)++;
-		philo->deathflag = 1;
-		pthread_mutex_unlock(&philo->rfork);
-		pthread_mutex_unlock(&philo->next->rfork);
+		(*(philo->params->death))++;
+		sem_post(&philo->params->forks);
+		sem_post(&philo->params->forks);
 	}
+	philo->death = 1;
+	kill(philo->params->head_pid, SIGUSR1);
 }
 
-void	philo_death(t_philo *philo)
+void	philo_death(t_philo **table, int pid)
 {
-	int	timestamp;
-	int	name;
+	int		timestamp;
+	int		name;
 
-	name = philo->name;
-	timestamp = getts(philo->params->init_time);
-	philo->deathflag = 1;
+	name = 0;
+	while (table[name]->pid != pid)
+		name++;
+	timestamp = getts(table[name]->params->init_time);
 	usleep(100);
-	printf("%8i" RED " %3i" RES " has died\n", ct(timestamp), name);
-	pthread_mutex_unlock(&philo->rfork);
+	printf("%8i" RED " %3i" RES " has died\n", ct(timestamp), name + 1);
+	sem_post(&table[name]->params->forks);
+	sem_post(&table[name]->params->forks);
+}
+
+void	philo_clean(t_philo **table, int num)
+{
+	int	i;
+
+	i = 0;
+	while (i < num)
+		free(table[i++]);
+	return ;
 }
