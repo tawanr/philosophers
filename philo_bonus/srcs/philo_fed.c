@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/23 07:34:49 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/23 08:41:00 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 09:09:40 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	fed_state(t_philo *philo, int flag)
 	}
 	else if (flag == 1)
 		fednum++;
-	else if (flag == 2 && numeat != 0 && fednum >= numeat)
-		return (1);
+	if (numeat != 0 && fednum == numeat)
+		kill(philo->params->head_pid, SIGUSR2);
 	return (0);
 }
 

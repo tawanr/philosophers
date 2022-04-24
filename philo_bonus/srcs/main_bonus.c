@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 18:20:34 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/23 08:37:48 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 09:11:26 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,26 +37,6 @@ int	main(int argc, char **argv)
 	return (0);
 }
 
-void	main_counter(t_philo **table, int *death, int num)
-{
-	int	i;
-
-	i = 0;
-	while (!(*death))
-	{
-		if (i >= num)
-			break ;
-		if (!table[i]->fed)
-			kill(table[i]->pid, SIGUSR1);
-		else
-			i++;
-		usleep(50);
-	}
-	if (i >= num)
-		kill_table(table, num);
-	return ;
-}
-
 t_philo	**philo_birth(t_params *params, int num)
 {
 	int		name;
@@ -82,8 +62,28 @@ t_philo	**philo_birth(t_params *params, int num)
 		name++;
 	}
 	if (pid == 0)
-		philo_loop(table[name], params);
+		philo_create_loop(table[name], params);
 	return (table);
+}
+
+void	philo_create_loop(t_philo *philo, t_params *params)
+{
+	pid_t	pid;
+	pid_t	int_pid;
+
+	int_pid = getpid();
+	pid = fork();
+	if (pid == 0)
+	{
+		philo->params->head_pid = int_pid;
+		philo_loop(philo, params);
+	}
+	signal_direction(philo, 0, 0, 0);
+	philo->pid = pid;
+	philo_buffer_state();
+	while (!buffer_state(-1))
+		usleep(5000);
+	exit(0);
 }
 
 void	philo_loop(t_philo *philo, t_params *params)
@@ -113,36 +113,4 @@ void	philo_loop(t_philo *philo, t_params *params)
 	while (!philo->death)
 		usleep(1000);
 	exit(0);
-}
-
-void	*deathcounter(t_philo *philo)
-{
-	unsigned int	counter;
-	unsigned int	last;
-
-	counter = 0;
-	last = 0;
-	fed_state(philo, 0);
-	while (counter < philo->params->p_ttdie * 1000 && !*(philo->params->death))
-	{
-		usleep(100);
-		if (philo->eat == 1)
-		{
-			last = getts(philo->params->init_time);
-			fed_state(philo, 1);
-			philo->eat = 0;
-		}
-		counter = getts(philo->params->init_time) - last;
-	}
-	philo_dying(counter, philo, 0);
-	return (NULL);
-}
-
-void	kill_table(t_philo **table, int total)
-{
-	int	i;
-
-	i = 0;
-	while (i < total)
-		kill(table[i++]->pid, SIGUSR2);
 }

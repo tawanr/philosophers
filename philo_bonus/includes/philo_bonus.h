@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:19:09 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/23 08:35:43 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 09:06:10 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,13 @@ void			philo_death(t_philo **table, int pid);
 int				fed_state(t_philo *philo, int flag);
 void			fedphilo(t_philo **table, int num, int pid, int flag);
 void			main_counter(t_philo **table, int *death, int num);
+void			philo_create_loop(t_philo *philo, t_params *params);
+
+// Buffer Prototypes
+void			philo_buffer_state(void);
+void			buffer_handler(int signo, siginfo_t *info, void *other);
+void			signal_direction(t_philo *philo, int signo, int pid, int flag);
+int				buffer_state(int flag);
 
 // Init Functions Prototypes
 t_params		*init_params(int argc, char **argv, int *fed, int *death);
