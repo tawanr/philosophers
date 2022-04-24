@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 09:16:08 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/23 00:52:27 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 09:22:54 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	philo_dying(unsigned int counter, t_philo *philo, int fed)
 	else
 	{
 		(*(philo->params->death))++;
-		sem_post(&philo->params->forks);
-		sem_post(&philo->params->forks);
+		sem_post(philo->params->forks);
+		sem_post(philo->params->forks);
 	}
 	philo->death = 1;
 	kill(philo->params->head_pid, SIGUSR1);
@@ -67,8 +67,8 @@ void	philo_death(t_philo **table, int pid)
 	timestamp = getts(table[name]->params->init_time);
 	usleep(100);
 	printf("%8i" RED " %3i" RES " has died\n", ct(timestamp), name + 1);
-	sem_post(&table[name]->params->forks);
-	sem_post(&table[name]->params->forks);
+	sem_post(table[name]->params->forks);
+	sem_post(table[name]->params->forks);
 }
 
 void	philo_clean(t_philo **table, int num)

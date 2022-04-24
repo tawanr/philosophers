@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:19:09 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/24 09:06:10 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 09:21:37 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_params
 	unsigned int	init_time;
 	int				*fed;
 	int				*death;
-	sem_t			forks;
+	sem_t			*forks;
 	pid_t			head_pid;
 }	t_params;
 

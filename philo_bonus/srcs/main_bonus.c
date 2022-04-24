@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 18:20:34 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/24 09:11:26 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 09:22:23 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ t_philo	**philo_birth(t_params *params, int num)
 	name = 0;
 	params->head_pid = getpid();
 	table = (t_philo **)malloc((num) * sizeof(t_philo *));
-	sem_init(&params->forks, 1, num);
+	params->forks = sem_open("forks", O_CREAT, 0, num);
+	// sem_init(&params->forks, 1, num);
 	while (name < num)
 	{
 		table[name] = (t_philo *)malloc(sizeof(t_philo));
@@ -97,15 +98,15 @@ void	philo_loop(t_philo *philo, t_params *params)
 	pthread_detach(tid);
 	while (!(philo->death))
 	{
-		sem_wait(&params->forks);
+		sem_wait(params->forks);
 		philo_action(philo, A_FORK, it);
-		sem_wait(&params->forks);
+		sem_wait(params->forks);
 		philo->eat = 1;
 		philo_action(philo, A_FORK, it);
 		philo_action(philo, A_EAT, it);
 		usleep(1000 * philo->params->p_tteat);
-		sem_post(&params->forks);
-		sem_post(&params->forks);
+		sem_post(params->forks);
+		sem_post(params->forks);
 		philo_action(philo, A_SLEEP, it);
 		usleep(1000 * philo->params->p_ttsleep);
 		philo_action(philo, A_THINK, it);
