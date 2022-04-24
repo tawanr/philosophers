@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:44:29 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/23 00:46:21 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 11:30:25 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_params	*init_params(int argc, char **argv, int *fed, int *death)
 	params.init_time = gettime();
 	params.fed = fed;
 	params.death = death;
+	params.f = -1;
 	return (&params);
 }
 
@@ -67,17 +68,4 @@ static int	isnum(char *str)
 int	ct(int usec)
 {
 	return (usec / 1000);
-}
-
-void	init_sighandler(void)
-{
-	struct sigaction	sa;
-
-	sa.sa_sigaction = sig_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_SIGINFO;
-	sigaddset(&sa.sa_mask, SIGUSR1);
-	sigaddset(&sa.sa_mask, SIGUSR2);
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
 }

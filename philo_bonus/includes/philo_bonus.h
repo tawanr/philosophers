@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/10 08:19:09 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/24 09:21:37 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 11:29:22 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <semaphore.h>
 # include <sys/time.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 
 # define A_FORK 1
 # define A_EAT 2
@@ -39,6 +40,9 @@
 # define WHT "\e[1;37m"
 # define RES "\e[0m"
 
+# define FULL 1
+# define STARVE 2
+
 typedef struct s_params
 {
 	unsigned int	p_num;
@@ -49,6 +53,7 @@ typedef struct s_params
 	unsigned int	init_time;
 	int				*fed;
 	int				*death;
+	int				f;
 	sem_t			*forks;
 	pid_t			head_pid;
 }	t_params;
@@ -69,17 +74,9 @@ void			*deathcounter(t_philo *temp);
 void			philo_action(t_philo *philo, int action, int ts);
 void			philo_clean(t_philo **table, int num);
 void			philo_dying(unsigned int counter, t_philo *philo, int fed);
-void			philo_death(t_philo **table, int pid);
-int				fed_state(t_philo *philo, int flag);
-void			fedphilo(t_philo **table, int num, int pid, int flag);
-void			main_counter(t_philo **table, int *death, int num);
-void			philo_create_loop(t_philo *philo, t_params *params);
-
-// Buffer Prototypes
-void			philo_buffer_state(void);
-void			buffer_handler(int signo, siginfo_t *info, void *other);
-void			signal_direction(t_philo *philo, int signo, int pid, int flag);
-int				buffer_state(int flag);
+void			philo_death(t_philo *philo, int timestamp);
+t_philo			*philo_create_loop(t_params *params, int name);
+void			waitloop(t_philo *philo);
 
 // Init Functions Prototypes
 t_params		*init_params(int argc, char **argv, int *fed, int *death);

@@ -6,7 +6,7 @@
 #    By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/10 09:24:00 by tratanat          #+#    #+#              #
-#    Updated: 2022/04/24 09:11:50 by tratanat         ###   ########.fr        #
+#    Updated: 2022/04/24 11:04:06 by tratanat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,8 @@ OBJ_DIR = objs/
 INCS = -Iincludes/
 NAME = philo_bonus
 SRCS = main_bonus.c philo_err_bonus.c philo_init_bonus.c philo_utils_bonus.c \
-		philo_output_bonus.c ft_atoi_bonus.c philo_sig_bonus.c philo_fed.c \
-		philo_fed_buffer.c philo_cleanup_bonus.c philo_counter_bonus.c
+		philo_output_bonus.c ft_atoi_bonus.c \
+		philo_cleanup_bonus.c philo_counter_bonus.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)

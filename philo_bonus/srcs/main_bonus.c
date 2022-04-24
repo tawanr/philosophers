@@ -6,7 +6,7 @@
 /*   By: tratanat <tawan.rtn@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 18:20:34 by tratanat          #+#    #+#             */
-/*   Updated: 2022/04/24 09:22:23 by tratanat         ###   ########.fr       */
+/*   Updated: 2022/04/24 11:49:07 by tratanat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,91 +27,93 @@ int	main(int argc, char **argv)
 		return (-1);
 	num = ft_atoi(argv[1]);
 	table = philo_birth(init_params(argc, argv, &fed, &death), num);
-	init_sighandler();
-	death_state(table, &death, num, 0);
-	fedphilo(table, num, 0, 0);
-	main_counter(table, &death, num);
-	death++;
-	usleep(5000);
+	while (!death)
+		usleep(50);
+	if (!fed && table[0]->params->f >= 0)
+		philo_death(table[table[0]->params->f], table[0]->params->init_time);
+	kill_table(table, num);
 	philo_clean(table, num);
 	return (0);
 }
 
 t_philo	**philo_birth(t_params *params, int num)
 {
-	int		name;
-	t_philo	**table;
-	pid_t	pid;
+	int			name;
+	t_philo		**table;
 
 	name = 0;
 	params->head_pid = getpid();
 	table = (t_philo **)malloc((num) * sizeof(t_philo *));
-	params->forks = sem_open("forks", O_CREAT, 0, num);
-	// sem_init(&params->forks, 1, num);
+	params->forks = sem_open("/forks", O_CREAT, 0777, num);
 	while (name < num)
 	{
-		table[name] = (t_philo *)malloc(sizeof(t_philo));
-		table[name]->name = name + 1;
-		table[name]->eat = 0;
-		table[name]->params = params;
-		table[name]->death = 0;
-		table[name]->fed = 0;
-		pid = fork();
-		if (pid == 0)
-			break ;
-		table[name]->pid = pid;
+		table[name] = philo_create_loop(params, name + 1);
+		sem_post(params->forks);
 		name++;
 	}
-	if (pid == 0)
-		philo_create_loop(table[name], params);
 	return (table);
 }
 
-void	philo_create_loop(t_philo *philo, t_params *params)
+t_philo	*philo_create_loop(t_params *params, int name)
+{
+	pthread_t	tid;
+	t_philo		*philo;
+
+	philo = (t_philo *)malloc(sizeof(t_philo));
+	philo->name = name;
+	philo->eat = 0;
+	philo->params = params;
+	philo->death = 0;
+	philo->fed = 0;
+	philo->params = params;
+	pthread_create(&tid, NULL, (void *)waitloop, philo);
+	return (philo);
+}
+
+void	waitloop(t_philo *philo)
 {
 	pid_t	pid;
-	pid_t	int_pid;
+	int		status;
+	int		exit_code;
 
-	int_pid = getpid();
 	pid = fork();
 	if (pid == 0)
-	{
-		philo->params->head_pid = int_pid;
-		philo_loop(philo, params);
-	}
-	signal_direction(philo, 0, 0, 0);
+		philo_loop(philo, philo->params);
 	philo->pid = pid;
-	philo_buffer_state();
-	while (!buffer_state(-1))
-		usleep(5000);
-	exit(0);
+	waitpid(pid, &status, 0);
+	exit_code = WEXITSTATUS(status);
+	if (exit_code == FULL)
+		(*philo->params->fed)++;
+	if (exit_code == STARVE && philo->params->f < 0)
+		philo->params->f = philo->name;
+	(*philo->params->death)++;
+	return ;
 }
 
 void	philo_loop(t_philo *philo, t_params *params)
 {
 	pthread_t	tid;
 	int			it;
+	sem_t		*forks;
 
+	(void)params;
 	pthread_create(&tid, NULL, (void *)deathcounter, philo);
-	init_childhandler(philo);
+	forks = sem_open("/forks", 0);
 	it = gettime();
 	pthread_detach(tid);
 	while (!(philo->death))
 	{
-		sem_wait(params->forks);
+		sem_wait(forks);
 		philo_action(philo, A_FORK, it);
-		sem_wait(params->forks);
+		sem_wait(forks);
 		philo->eat = 1;
 		philo_action(philo, A_FORK, it);
 		philo_action(philo, A_EAT, it);
 		usleep(1000 * philo->params->p_tteat);
-		sem_post(params->forks);
-		sem_post(params->forks);
+		sem_post(forks);
+		sem_post(forks);
 		philo_action(philo, A_SLEEP, it);
 		usleep(1000 * philo->params->p_ttsleep);
 		philo_action(philo, A_THINK, it);
 	}
-	while (!philo->death)
-		usleep(1000);
-	exit(0);
 }
